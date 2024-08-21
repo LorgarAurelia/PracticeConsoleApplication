@@ -1,8 +1,10 @@
-﻿namespace TestConsoleApplication.Common
+﻿using TestConsoleApplication.Services.Analize;
+
+namespace TestConsoleApplication.Common
 {
     public class Settings
     {
-        public string DBConnectionString { get; set; }
-        public string FilesRoot { get; set; }
+        public AppSettings AppSettings { get; set; }
+        public AnalyzerSettings AnalyzerSettings { get; set; }
     }
 }

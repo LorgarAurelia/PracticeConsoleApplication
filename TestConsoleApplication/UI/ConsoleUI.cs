@@ -4,13 +4,6 @@ namespace TestConsoleApplication.UI
 {
     public class ConsoleUI : IUI
     {
-        private static ConsoleUI _instance;
-        private ConsoleUI() { }
-        public static IUI GetInstance()
-        {
-            _instance ??= new();
-            return _instance;
-        }
         public string AskString(string message)
         {
             ShowMessage(message);
@@ -59,7 +52,7 @@ namespace TestConsoleApplication.UI
             ConsoleKey input;
             do
             {
-                ShowMessage("Y/N?");
+                ShowMessage(DefaultMessages.AskBool);
                 input = Console.ReadKey().Key;
 
             } while (input != ConsoleKey.Y && input != ConsoleKey.N);

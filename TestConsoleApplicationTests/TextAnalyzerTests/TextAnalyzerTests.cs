@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using TestConsoleApplication.Common;
-using TestConsoleApplication.Log;
 using TestConsoleApplication.Services.Analize;
 using TestConsoleApplication.Services.Logger;
 using TestConsoleApplication.Services.Repository.Models;

@@ -1,5 +1,4 @@
 ﻿using TestConsoleApplication.Common;
-using TestConsoleApplication.Log;
 using TestConsoleApplication.Services.Logger;
 using TestConsoleApplication.Services.Repository.Models;
 using TestConsoleApplication.UI;
@@ -21,7 +20,7 @@ namespace TestConsoleApplication.Services.Analize
             _totalBooks = books.Length;
 
             var booksClusters = PrepareClusters(books);
-            List<Thread> threads = new();//ThreadPool показал себя неэффективно с такими короткими задачами
+            List<Thread> threads = new();//ThreadPool показал себя неэффективно с такими короткими задачами, надо будет придумать более трудоемкие методы
             foreach (var cluster in booksClusters)
             {
                 Thread clusterAnalyze = new(() => SearchAndNotify(cluster));
@@ -33,7 +32,7 @@ namespace TestConsoleApplication.Services.Analize
                 thread.Join();
 
             if (_state == TextAnalyzerState.Stopped)
-                return TCResult<Book[]>.GetError(ExitStatus.RequiredByUser, books);
+                return TCResult<Book[]>.GetSuccessWithExit(books, ExitStatus.RequiredByUser);
             return TCResult<Book[]>.GetSuccessWithoutExit(books);
         }
 

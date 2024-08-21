@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
 using TestConsoleApplication.Services.Analize;
 using TestConsoleApplication.Services.FileControl;
 using TestConsoleApplication.Services.Logger;
@@ -12,8 +13,8 @@ namespace TestConsoleApplication.Common
 {
     public static class HostApplicationBuilderExtension
     {
-        public static void InjectDependency(this HostApplicationBuilder builder, Settings settings)
-        {
+        public static void InjectDependency(this HostApplicationBuilder builder, AppSettings settings)
+        {   
             builder.Services
             .AddSingleton<BookContext>(u => new(settings.DBConnectionString))
             .AddTransient<IBookCatalog, BookCatalog>()
@@ -23,15 +24,19 @@ namespace TestConsoleApplication.Common
             .AddTransient<ITextAnalyzer, TextAnalyzer>()
             .AddAutoMapper(typeof(BookProfile));
         }
-        public static Settings BuildAppConfiguration(this HostApplicationBuilder builder, IUI userInterface)
+
+        public static Settings BuildAppConfiguration(this HostApplicationBuilder builder)
         {
-            builder.Configuration.AddJsonFile("appSettings.json", true, true);
-            builder.Configuration.AddJsonFile("textAnalyzeSetting.json", false, true);
+            var userInterface = new ConsoleUI();
 
-            var appSettings = builder.Configuration.Get<Settings>();
-            VerifyAnalyzeSettings(builder.Configuration.Get<AnalyzerSettings>(), userInterface);
+            builder.Configuration.AddJsonFile("appSettings.json", true, false);
+            builder.Configuration.AddJsonFile("textAnalyzerSetting.json", false, false);
 
-            appSettings ??= new Settings();
+            var appSettings = builder.Configuration.Get<AppSettings>();
+            var analyzerSettings = builder.Configuration.Get<AnalyzerSettings>();
+            VerifyAnalyzeSettings(analyzerSettings, userInterface);
+
+            appSettings ??= new AppSettings();
 
             if (string.IsNullOrEmpty(appSettings.DBConnectionString))
                 appSettings.DBConnectionString = userInterface.AskNecessaryValue<string>(DefaultMessages.AskForConnectionString, userInterface.AskString);
@@ -42,7 +47,14 @@ namespace TestConsoleApplication.Common
                 $"{builder.Configuration.GetValue<string>("HOMEPATH")}" +
                 $"\\{AppDomain.CurrentDomain.FriendlyName}";
 
-            return appSettings;
+            return new() { AnalyzerSettings = analyzerSettings, AppSettings = appSettings};
+        }
+
+        private static AppSettings EnsureAppSettingsExisting(AppSettings settings, HostApplicationBuilder builder)
+        {
+            settings ??= new AppSettings();
+
+            return settings;
         }
         private static void VerifyAnalyzeSettings(AnalyzerSettings settings, IUI userInterface)
         {

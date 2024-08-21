@@ -1,4 +1,4 @@
-﻿using TestConsoleApplication.Log;
+﻿using TestConsoleApplication.Services.Logger;
 
 namespace TestConsoleApplication.Services.Repository.Models
 {

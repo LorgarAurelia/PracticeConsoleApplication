@@ -27,7 +27,7 @@ namespace TestConsoleApplication.Common
             result.Message = DefaultMessages.SuccessMesage;
             return result;
         }
-        public static TCResult<TContent> GetSuccessWithExit(TContent content, string message = DefaultMessages.SuccessMesage, ExitStatus exitStatus = ExitStatus.Success)
+        public static TCResult<TContent> GetSuccessWithExit(TContent content, ExitStatus exitStatus, string message = DefaultMessages.SuccessMesage)
         {
             var result = GetSuccess(content);
             result.ExitStatus = exitStatus;

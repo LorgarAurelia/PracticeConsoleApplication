@@ -6,10 +6,10 @@ namespace TestConsoleApplication.Services.FileControl
 {
     public class FilesController : IFilesController
     {
-        private Settings _appSettings;
+        private AppSettings _appSettings;
         private string _externalStoragePath;
         private FileControllerState _state = FileControllerState.JustCreated;
-        public FilesController(Settings appSettings) => _appSettings = appSettings;
+        public FilesController(AppSettings appSettings) => _appSettings = appSettings;
 
         public async Task EnsureFilesSystemCreatedAsync()
         {
@@ -20,7 +20,7 @@ namespace TestConsoleApplication.Services.FileControl
             var directoryEnsuringTask = EnsureDirectoryCreatedAsync();
             await Task.WhenAll(readSettingsTask, directoryEnsuringTask);
 
-            var settingsFromJson = JsonSerializer.Deserialize<Settings>(readSettingsTask.Result);
+            var settingsFromJson = JsonSerializer.Deserialize<AppSettings>(readSettingsTask.Result);
 
             var updateSettingsTask = UpdateAppSettingIfRequiredAsync(settingsFromJson);
             var ImportSorageInsuringTask = EnsureImportStorageCreatedAsync();
@@ -76,7 +76,7 @@ namespace TestConsoleApplication.Services.FileControl
             if (!Directory.Exists(_appSettings.FilesRoot))
                 await Task.Run(() => Directory.CreateDirectory(_appSettings.FilesRoot));
         }
-        private async Task UpdateAppSettingIfRequiredAsync(Settings appSettingsFromJson)
+        private async Task UpdateAppSettingIfRequiredAsync(AppSettings appSettingsFromJson)
         {
             if (string.IsNullOrEmpty(appSettingsFromJson.DBConnectionString) || string.IsNullOrEmpty(appSettingsFromJson.FilesRoot))
             {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TestConsoleApplication.Common;
-using TestConsoleApplication.Log;
+using TestConsoleApplication.Services.Logger;
 using TestConsoleApplication.Services.Repository.Models;
 
 namespace TestConsoleApplication.Services.Repository
@@ -11,7 +10,7 @@ namespace TestConsoleApplication.Services.Repository
         private int _counter = 0;
 
         public BookCatalog(BookContext context) => _context = context;
-
+        //TODO: Make it use TCResult
         public async Task SaveLogAsync(AnalyzeLog log)
         {
             _context.Logs.Add(log);
@@ -25,6 +24,13 @@ namespace TestConsoleApplication.Services.Repository
             await _context.SaveChangesAsync();
         }
         public async Task<Book[]> GetAllBoksAsync() => await _context.Books.AsNoTracking().ToArrayAsync();
-        public async Task<Book[]> GetUnfinishedBooksAsync(int lastId) => await _context.Books.AsNoTracking().Where(u => u.Id > lastId).ToArrayAsync();
+        public async Task<Book[]> GetUnfinishedBooksAsync() => await _context.Books.AsNoTracking().Where(u => u.Status == BookStatus.Unprocessed).ToArrayAsync();
+        public async Task UpdateBooksStatus(Book[] booksForUpdate)
+        {
+            var books = await _context.Books.ToArrayAsync();
+            foreach (var book in booksForUpdate)
+                books.First(u => u.Id == book.Id).Status = book.Status;
+            await _context.SaveChangesAsync();
+        }
     }
 }
