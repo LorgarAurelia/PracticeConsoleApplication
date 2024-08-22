@@ -13,7 +13,7 @@ namespace TestConsoleApplication.Services.Repository.Models
 
     public enum BookStatus
     {
-        Processed,
-        Unprocessed
+        Processed = 1,
+        Unprocessed = 0
     }
 }
