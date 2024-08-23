@@ -12,7 +12,7 @@ namespace TestConsoleApplication.Services.Analize
         private TextAnalyzerState _state = TextAnalyzerState.Process;
         private readonly ITCLogger _logger = logger;
         private readonly IUI _userInterface = userInterface;
-        private int _totalBooks = 0;
+        private double _totalBooks = 0;
 
         public TCResult<Book[]> FindKeyWord(Book[] books, AnalyzerSettings searchSettings)
         {
@@ -39,9 +39,9 @@ namespace TestConsoleApplication.Services.Analize
 
         private List<List<Book>> PrepareClusters(Book[] books)
         {
-            var clustersCount = Math.Ceiling((float)(_totalBooks / _settings.ClusterSize));
+            var clustersCount = Math.Ceiling(_totalBooks / _settings.ClusterSize); 
             var totalCounter = 0;
-
+            
             List<List<Book>> clusters = new();
 
             for (int clustersCounter = 0; clustersCounter < clustersCount; clustersCounter++)

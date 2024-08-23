@@ -1,12 +1,10 @@
-﻿using TestConsoleApplication.Services.Repository.Models;
+﻿using TestConsoleApplication.Services.Repository;
+using TestConsoleApplication.Services.Repository.Models;
 
 namespace TestConsoleApplication.Services.Logger
 {
-    public class Logger : ITCLogger
+    public class Logger(IBookCatalog db) : ITCLogger
     {
-        public async Task LogBook(AnalyzeLog log)
-        {
-            //Надо будет найти какой-нибудь интересный кейс для реализации
-        }
+        public async Task LogBook(AnalyzeLog log) => await db.SaveLogAsync(log);
     }
 }
